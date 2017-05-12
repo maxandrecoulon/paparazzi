@@ -137,7 +137,7 @@ static void fill_anchor(uint8_t *buffer, Anchor* _anchor) {
 }
 
 /* Fonction de lecture et de mise en place de la machine a etats */
-static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor *_anchor) {
+static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor* _anchor) {
 
 
   switch (machine_state->current_state) {
@@ -250,8 +250,13 @@ static void parse_gps_dw1000_small(float x, float y, float z) {
 void dw1000_arduino_init() {
 
   //anchor structure init
-  anchor = {{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, 
-            {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, {0,0,0}, {0,0,0}, {1, 2, 3}, false};
+  anchor.distances1 = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
+  anchor.distances2 = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
+  anchor.distances3 = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
+  anchor.filtered_distances = {0,0,0};
+  anchor.index = {0,0,0};
+  anchor.ids = {1, 2, 3};
+  anchor.new_dist = false;
 
   trilateration_init();
   //sonar init
