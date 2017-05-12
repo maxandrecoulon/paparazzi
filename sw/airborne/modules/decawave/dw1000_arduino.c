@@ -68,11 +68,13 @@ struct Anchor {
     float distances1[NB_ELEM][2]; //tableau de buffers tournants contenant sur chaque ligne une distance, un temps d'emission
     float distances2[NB_ELEM][2];
     float distances3[NB_ELEM][2];
-    float flitered_distances[3];
+    float filtered_distances[3];
     int index[3]; //tableau des trois index contenant les indices courants des buffers tournants
     uint16_t ids[3];
     bool new_dist;
 };
+
+static Anchor anchor;
 
 typedef struct Machine_state Machine_state;
 struct Machine_state {
@@ -111,28 +113,31 @@ static uint8_t* float_to_buf(float f, uint8_t* b) {
 }
 
 /* Fonction de remplissage du tableau des distances ancres-tag */
-static void fill_anchor(uint8_t *buffer, Anchor* anchor) {
+static void fill_anchor(uint8_t *buffer, Anchor* _anchor) {
 
-    if (uint16_from_buf(buffer) == anchor->ids[0]) {
-        anchor->index[0] = (anchor->index[0] + 1) % NB_ELEM;
-        anchor->distances1[anchor->index[0]] = {float_from_buf(buffer+2), get_sys_time_float()};
+    if (uint16_from_buf(buffer) == _anchor->ids[0]) {
+        _anchor->index[0] = (_anchor->index[0] + 1) % NB_ELEM;
+        _anchor->distances1[_anchor->index[0]][0] = float_from_buf(buffer+2);
+        _anchor->distances1[_anchor->index[0]][1] = get_sys_time_float();
     }
 
-    else if (uint16_from_buf(buffer) == anchor->ids[1]) {
-        anchor->index[1] = (anchor->index[1] + 1) % NB_ELEM;
-        anchor->distances2[anchor->index[1]] = {float_from_buf(buffer+2), get_sys_time_float()};
+    else if (uint16_from_buf(buffer) == _anchor->ids[1]) {
+        _anchor->index[1] = (_anchor->index[1] + 1) % NB_ELEM;
+        _anchor->distances2[_anchor->index[0]][0] = float_from_buf(buffer+2);
+        _anchor->distances2[_anchor->index[0]][1] = get_sys_time_float();
     }
 
-    else if (uint16_from_buf(buffer) == anchor->ids[2]) {
-        anchor->index[2] = (anchor->index[2] + 1) % NB_ELEM;
-        anchor->distances3[anchor->index[2]] = {float_from_buf(buffer+2), get_sys_time_float()};
+    else if (uint16_from_buf(buffer) == _anchor->ids[2]) {
+        _anchor->index[2] = (_anchor->index[2] + 1) % NB_ELEM;
+        _anchor->distances3[_anchor->index[0]][0] = float_from_buf(buffer+2);
+        _anchor->distances3[_anchor->index[0]][1] = get_sys_time_float();
     }
 
     else printf("Error ID\n");
 }
 
 /* Fonction de lecture et de mise en place de la machine a etats */
-static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor *anchor) {
+static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor *_anchor) {
 
 
   switch (machine_state->current_state) {
@@ -169,8 +174,8 @@ static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor
         }
 
         if (checksum == c) {
-            fill_anchor(machine_state->buffer, anchor);
-            anchor->new_dist = true;
+            fill_anchor(machine_state->buffer, _anchor);
+            _anchor->new_dist = true;
         }
 
         else printf("Error checksum\n");
@@ -181,18 +186,20 @@ static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor
 }
 
 
-static void filter_distances(Anchor *anchor) {
+static void filter_distances(Anchor *_anchor) {
   float filtered_distance1 = 0;
   float filtered_distance2 = 0;
   float filtered_distance3 = 0;
 
   for (int i=0; i<NB_ELEM; i++) {
-    filtered_distance1 += anchor->distances1[i][0];
-    filtered_distance2 += anchor->distances2[i][0];
-    filtered_distance3 += anchor->distances3[i][0];
+    filtered_distance1 += _anchor->distances1[i][0];
+    filtered_distance2 += _anchor->distances2[i][0];
+    filtered_distance3 += _anchor->distances3[i][0];
   }
   
-  anchor->filter_distances = {filtered_distance1/NB_ELEM, filtered_distance2/NB_ELEM, filtered_distance3/NB_ELEM};
+  _anchor->filtered_distances[0] = filtered_distance1/NB_ELEM;
+  _anchor->filtered_distances[1] = filtered_distance2/NB_ELEM;
+  _anchor->filtered_distances[2] = filtered_distance3/NB_ELEM;
 }
 
 static void sonar_cb(uint8_t __attribute__((unused)) sender_id, float distance) {
@@ -241,10 +248,12 @@ static void parse_gps_dw1000_small(float x, float y, float z) {
 }
 
 void dw1000_arduino_init() {
+  //anchor = {{0, 0, 0}, {1, 2, 3}};
   //anchor structure init
-  anchor->index = {0, 0, 0};
-  anchor->new_dist = false;
+  //anchor.index = {0, 0, 0};
+  anchor.new_dist = false;
 
+  trilateration_init();
   //sonar init
   sonar_value = 0.;
   AbiBindMsgAGL(AGL_DIST_SONAR_ID, &sonar_ev, sonar_cb);
@@ -277,7 +286,6 @@ void dw1000_arduino_report() {
 void dw1000_arduino_event() {
 
   struct EnuCoor_f pos;
-  Anchor anchor = {{0, 0, 0}, {1, 2, 3}};
   Machine_state machine_state = {WS, 0, {}};
 
   // Look for data on serial link and send to parser

@@ -22,6 +22,7 @@
     <configure name="DW1000_ARDUINO_UART" case="upper|lower"/>
     <configure name="DW1000_ARDUINO_BAUD" default="B115200"/>
     <file name="dw1000_arduino.c"/>
+    <file name="trilateration.c"/>
     <define name="USE_$(DW1000_ARDUINO_UART_UPPER)"/>
     <define name="DW1000_ARDUINO_DEV" value="$(DW1000_ARDUINO_UART_LOWER)"/>
     <define name="$(DW1000_ARDUINO_UART_UPPER)_BAUD" value="$(DW1000_ARDUINO_BAUD)"/>

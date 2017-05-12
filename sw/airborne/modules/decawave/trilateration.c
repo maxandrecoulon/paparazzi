@@ -9,11 +9,12 @@
 #include <stdio.h>
 #include <math.h>
 #include "math/pprz_simple_matrix.h"
+#include "trilateration.h"
 
 
 // Calcule l'angle au niveau de la balise n°1 à partir de la formule d'Al-Kashi
-static float alKashi_angle1(double 1_2, double 1_3, double 2_3) {
-    return (float)acos((1_3 ** 2 + 1_2**2 - 2_3**2) / (1_3*1_2));
+static float alKashi_angle1(double _1_2, double _1_3, double _2_3) {
+    return (float)acosf((powf(_1_3,2.0) + _1_2*_1_2 - _2_3*_2_3) / (_1_3*_1_2));
 }
 
 static float projection(float r, float z) {
@@ -27,7 +28,9 @@ float DISTANCE_ANCHOR_1_3;
 float DISTANCE_ANCHOR_2_3;
 
 
-float angle1 = alKashi_angle1((double)DISTANCE_ANCHOR_1_2, (double)DISTANCE_ANCHOR_1_3, (double)DISTANCE_ANCHOR_2_3);
+float angle1 = 0.f;
+
+// = alKashi_angle1((double)DISTANCE_ANCHOR_1_2, (double)DISTANCE_ANCHOR_1_3, (double)DISTANCE_ANCHOR_2_3);
 
 /* Positions des ancres */
 float POSITION1[2] = {0, 0};
@@ -63,6 +66,10 @@ static void MAT_MUL(int _i,int _k,int _j,float C[2][2],float A[2][2],float B[2][
             }
 }
 
+void trilateration_init(void)
+{
+}
+
 
 struct EnuCoor_f trilateration(float* dist, float z) {
 
@@ -94,7 +101,10 @@ struct EnuCoor_f trilateration(float* dist, float z) {
     X[0][0] = C[0][0]*b[0][0]+C[0][1]*b[1][0];
     X[1][0] = C[1][0]*b[0][0]+C[1][1]*b[1][0];
 
-    struct EnuCoor_f enu = { X[0][0], X[1][0], z };
+    struct EnuCoor_f enu;
+enu.x = X[0][0];
+enu.y = X[1][0];
+enu.z =  z ;
     return enu;
 }
 
