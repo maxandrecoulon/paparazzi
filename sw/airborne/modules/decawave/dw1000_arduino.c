@@ -248,10 +248,10 @@ static void parse_gps_dw1000_small(float x, float y, float z) {
 }
 
 void dw1000_arduino_init() {
-  //anchor = {{0, 0, 0}, {1, 2, 3}};
+
   //anchor structure init
-  //anchor.index = {0, 0, 0};
-  anchor.new_dist = false;
+  anchor = {{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, 
+            {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}, {0,0,0}, {0,0,0}, {1, 2, 3}, false};
 
   trilateration_init();
   //sonar init
