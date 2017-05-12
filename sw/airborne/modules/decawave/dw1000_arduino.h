@@ -31,4 +31,3 @@ extern void dw1000_arduino_report(void);
 extern void dw1000_arduino_event(void);
 
 #endif
-
