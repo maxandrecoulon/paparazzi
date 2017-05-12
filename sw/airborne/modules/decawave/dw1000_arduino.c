@@ -137,7 +137,7 @@ static void fill_anchor(uint8_t *buffer, Anchor* _anchor) {
 }
 
 /* Fonction de lecture et de mise en place de la machine a etats */
-static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor *_anchor) {
+static void dw1000_arduino_parse(uint8_t c, Machine_state *machine_state, Anchor* _anchor) {
 
 
   switch (machine_state->current_state) {

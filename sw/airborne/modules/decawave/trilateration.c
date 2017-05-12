@@ -31,10 +31,9 @@ float angle1 = 0.f;
 
 
 /* Positions des ancres */
-float POSITION1[2] = {0, 0};
-float POSITION2[2] = {DISTANCE_ANCHOR_1_2, 0};
-float POSITION3[2] = {DISTANCE_ANCHOR_1_3 * cos(angle1), DISTANCE_ANCHOR_1_3 * sin(angle1)};
-
+float POSITION1[2];
+float POSITION2[2];
+float POSITION3[2];
 
 
 static void MAT_INV22(float _invS[2][2],float _S[2][2]) {
@@ -66,6 +65,10 @@ static void MAT_MUL(int _i,int _k,int _j,float C[2][2],float A[2][2],float B[2][
 
 void trilateration_init(void) {
     angle1 = alKashi_angle1((double)DISTANCE_ANCHOR_1_2, (double)DISTANCE_ANCHOR_1_3, (double)DISTANCE_ANCHOR_2_3);
+
+    POSITION1[2] = {0, 0};
+    POSITION2[2] = {DISTANCE_ANCHOR_1_2, 0};
+    POSITION3[2] = {DISTANCE_ANCHOR_1_3 * cos(angle1), DISTANCE_ANCHOR_1_3 * sin(angle1)};
 }
 
 
