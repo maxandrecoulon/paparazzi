@@ -59,6 +59,7 @@ float psi;
 #define CK 2
 #define NB 6
 #define NB_ELEM 10
+#define DW1000_ARDUINO_DEV 1
 
 
 /* Definition des structures Ancres (contenant les distances des ancres au tag) et Machine a etats */
@@ -250,12 +251,25 @@ static void parse_gps_dw1000_small(float x, float y, float z) {
 void dw1000_arduino_init() {
 
   //anchor structure init
-  anchor.distances1 = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
-  anchor.distances2 = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
-  anchor.distances3 = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
-  anchor.filtered_distances = {0,0,0};
-  anchor.index = {0,0,0};
-  anchor.ids = {1, 2, 3};
+  for(int i=0; i<NB_ELEM; i++) {
+  	anchor.distances1[i][0] = 0;
+  	anchor.distances1[i][1] = 0;
+  	anchor.distances2[i][0] = 0;
+  	anchor.distances2[i][1] = 0;
+  }
+
+  anchor.filtered_distances[0] = 0;
+  anchor.filtered_distances[1] = 0;
+  anchor.filtered_distances[2] = 0;
+
+  anchor.index[0] = 0;
+  anchor.index[1] = 0;
+  anchor.index[2] = 0;
+
+  anchor.ids[0] = 1;
+  anchor.ids[1] = 2;
+  anchor.ids[2] = 3;
+
   anchor.new_dist = false;
 
   trilateration_init();
