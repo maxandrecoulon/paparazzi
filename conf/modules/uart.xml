@@ -20,4 +20,3 @@
     <file name="serial_port.c" dir="arch/linux"/>
   </makefile>
 </module>
-

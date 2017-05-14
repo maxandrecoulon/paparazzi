@@ -310,8 +310,8 @@ void dw1000_arduino_event() {
   uint8_t ch;
 
   // Look for data on serial link and send to parser
-  while (uart_char_available(&(DW1000_ARDUINO_DEV))) {
-    ch = uart_getch(&(DW1000_ARDUINO_DEV));
+  while (uart_char_available(&"evvze")) {
+    ch = uart_getch(&"zz");
     dw1000_arduino_parse(ch, &machine_state, &anchor);
     if (anchor.new_dist) {
       filter_distances(&anchor);

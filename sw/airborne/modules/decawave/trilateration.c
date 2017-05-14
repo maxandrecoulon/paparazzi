@@ -35,40 +35,17 @@ float POSITION1[2];
 float POSITION2[2];
 float POSITION3[2];
 
-
-static void MAT_INV22(float _invS[2][2],float _S[2][2]) {
-    float det = _S[0][0]*_S[1][1] - _S[1][0]*_S[0][1];
-    if(det == 0)
-    {
-        printf("value determinant error\n");
-    }
-    else
-    {
-        _invS[0][0] = (1/det)*_S[1][1];
-        _invS[0][1] = -(1/det)*_S[0][1];
-        _invS[1][0] = -(1/det)*_S[1][0];
-        _invS[1][1] = (1/det)*_S[0][0];
-    }
-}
-
-// C = A*B   A:(i,k) B:(k,j) C:(i,j)
-static void MAT_MUL(int _i,int _k,int _j,float C[2][2],float A[2][2],float B[2][2]) {
-    int l,c,m;
-    for (l=0; l<_i; l++)
-            for (c=0; c<_j; c++)
-            {
-                C[l][c] = 0.;
-                    for (m=0; m<_k; m++)
-                        C[l][c] += A[l][m]*B[m][c];
-            }
-}
-
 void trilateration_init(void) {
     angle1 = alKashi_angle1((double)DISTANCE_ANCHOR_1_2, (double)DISTANCE_ANCHOR_1_3, (double)DISTANCE_ANCHOR_2_3);
 
-    POSITION1[2] = {0, 0};
-    POSITION2[2] = {DISTANCE_ANCHOR_1_2, 0};
-    POSITION3[2] = {DISTANCE_ANCHOR_1_3 * cos(angle1), DISTANCE_ANCHOR_1_3 * sin(angle1)};
+    POSITION1[0] = 0;
+    POSITION1[1] = 0;
+
+    POSITION2[0] = DISTANCE_ANCHOR_1_2;
+    POSITION2[1] = 0;
+
+    POSITION3[0] = DISTANCE_ANCHOR_1_3 * cos(angle1);
+    POSITION3[1] = DISTANCE_ANCHOR_1_3 * sin(angle1);
 }
 
 
@@ -109,5 +86,3 @@ struct EnuCoor_f trilateration(float* dist, float z) {
 
     return enu;
 }
-
-
