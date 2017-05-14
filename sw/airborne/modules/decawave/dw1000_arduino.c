@@ -59,7 +59,6 @@ float psi;
 #define CK 2
 #define NB 6
 #define NB_ELEM 10
-#define DW1000_ARDUINO_DEV 1
 
 
 /* Definition des structures Ancres (contenant les distances des ancres au tag) et Machine a etats */
@@ -256,6 +255,8 @@ void dw1000_arduino_init() {
   	anchor.distances1[i][1] = 0;
   	anchor.distances2[i][0] = 0;
   	anchor.distances2[i][1] = 0;
+  	anchor.distances3[i][0] = 0;
+  	anchor.distances3[i][1] = 0;
   }
 
   anchor.filtered_distances[0] = 0;
@@ -309,8 +310,8 @@ void dw1000_arduino_event() {
   uint8_t ch;
 
   // Look for data on serial link and send to parser
-  while (uart_char_available(&DW1000_ARDUINO_DEV)) {
-    ch = uart_getch(&DW1000_ARDUINO_DEV);
+  while (uart_char_available(&(DW1000_ARDUINO_DEV))) {
+    ch = uart_getch(&(DW1000_ARDUINO_DEV));
     dw1000_arduino_parse(ch, &machine_state, &anchor);
     if (anchor.new_dist) {
       filter_distances(&anchor);

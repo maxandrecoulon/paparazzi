@@ -28,4 +28,3 @@
     <define name="$(DW1000_ARDUINO_UART_UPPER)_BAUD" value="$(DW1000_ARDUINO_BAUD)"/>
   </makefile>
 </module>
-
