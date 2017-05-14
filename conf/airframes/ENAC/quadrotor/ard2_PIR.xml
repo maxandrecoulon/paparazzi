@@ -3,7 +3,7 @@
 <airframe name="ardrone2_basic">
 
   <firmware name="rotorcraft">
-    <configure name="PREFIX" value="/opt/arm-2012.03/bin/arm-none-linux-gnueabi"/>
+    <!--configure name="PREFIX" value="/opt/arm-2012.03/bin/arm-none-linux-gnueabi"/-->
     <define name="DEBUG_VFF_EXTENDED"/>
     <!--configure name="HOST" value="192.168.1.$(AC_ID)"/-->
     <target name="ap" board="ardrone2">
