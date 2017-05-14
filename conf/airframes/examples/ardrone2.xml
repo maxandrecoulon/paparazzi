@@ -31,7 +31,6 @@
     <module name="send_imu_mag_current"/>
     <module name="air_data"/>
     <module name="geo_mag"/>
-    <module name="dw1000_arduino"/>
     <!--module name="logger_file"/-->
     <module name="video_thread">
     </module>
